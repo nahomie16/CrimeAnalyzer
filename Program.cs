@@ -6,8 +6,7 @@ using System.IO;
 namespace CrimeAnalyzer
 {
 
-
-
+ 
     class CrimeStats
     {
 
@@ -27,7 +26,6 @@ namespace CrimeAnalyzer
 
         public CrimeStats(int year, int population, int violentCrime, int murder, int rape, int robbery, int aggravatedAssault, int propertyCrime, int burglary, int theft, int motorVehicleTheft)
         {
-
             this.year = year;
             this.population = population;
             this.violentCrime = violentCrime;
@@ -47,12 +45,15 @@ namespace CrimeAnalyzer
 
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             string line;
 
             try
             {
+
+
+
                 List<CrimeStats> crimeStatsList = new List<CrimeStats>();
 
 
@@ -100,61 +101,60 @@ namespace CrimeAnalyzer
                     crimeStatsList.Add(crimeStats);
 
 
-                }   
+                }
+       
+                // What is the range of years included in the data?
+                IEnumerable<int> q1 = from crimeStats in crimeStatsList
+                                      where crimeStats.year <= 2013 && crimeStats.year >= 1994
+                                      select crimeStats.year; 
 
+                Console.WriteLine($"Period {q1.Min()} - {q1.Max()}  ({q1.Max() - q1.Min()} years)"); 
+
+
+                // How many years of data are included?
                 IEnumerable<int> q2 = from crimeStats in crimeStatsList
                                       where crimeStats.year > 1
-                                      select crimeStats.year; 
-                
+                                      select crimeStats.year;
+
+                Console.WriteLine(q2.Count()); 
 
 
+                // What years is the number of murders per year less than 15000?
+                IEnumerable<int> q3 =   from crimeStats in crimeStatsList 
+                                         where crimeStats.murder < 15000
+                                        select crimeStats.year;
+                foreach(int y in q3 ){
 
-                IEnumerable<int> q3 = from crimeStats in crimeStatsList where crimeStats.robbery > 15000 select crimeStats.year;
-
-         
-                IEnumerable<int> q4 = from crimeStats in crimeStatsList where crimeStats.robbery > 500000 select crimeStats.year;
-
-
-                IEnumerable<int> q10 = from crimeStats in crimeStatsList
-                                       where crimeStats.motorVehicleTheft < 1200000 && crimeStats.rape > 89411
-                                       select crimeStats.year;
-
-                IEnumerable<int> sample = from crimeStats in crimeStatsList
-                                       select crimeStats.murder;
-
-                double avg = sample.Average(); 
-                Console.WriteLine($"Average murder per year: {avg}" );
-                Console.WriteLine("___________ ");
-
-
-
-                IEnumerable<int> q8 = from crimeStats in crimeStatsList
-                                      where crimeStats.murder > 2010 && crimeStats.murder > 2013 
-                                      select crimeStats.year;  // add average 
-
-
-                /// Average number of murders 
-                IEnumerable<int> q6 = from crimeStats in crimeStatsList    
-                                      select crimeStats.murder;
-
-                /// Average number of murders for 1994 to 1997
-                IEnumerable<int> q7 = from crimeStats in crimeStatsList
-                                    where crimeStats.year > 1994 && crimeStats.year <= 1997
-                                      select crimeStats.murder;
-
-                double q6_average = q6.Average();
-                Console.WriteLine($"Question q6 is {q6_average}"); 
-
-
-                double q7_average = q6.Average();
-                Console.WriteLine($"Question q6 is {q7_average}"); 
-
-                Console.WriteLine("Years where rapes were less than 15000");
-
-                foreach (int t in q10)
-                { // loop through result from each Year where rapes were less than 85000
-                    Console.WriteLine(t);
+                    Console.WriteLine(y); 
                 }
+                Console.WriteLine(" -------------------");
+
+                // What are the years and associated robberies per year for years where the number of robberies is greater than 500000 ?
+                IEnumerable<int> q4 = from crimeStats in crimeStatsList
+                                      where crimeStats.robbery > 500000
+                                      select crimeStats.year;
+
+                foreach(int y in q4 ){
+                    
+                    Console.WriteLine(y);
+                }
+
+
+                // What is the average number of murders per year across all years? 
+                IEnumerable<int> q6 = from crimeStats in crimeStatsList
+                                      select crimeStats.murder;
+
+
+                double avg_murder = q6.Average(); 
+                Console.WriteLine($"What is the average number of murders per year across all years ? {avg_murder}");
+
+                // What is the average number of murders per year for 1994 to 1997?
+
+                IEnumerable<int> q7 = from crimeStats in crimeStatsList
+                                      where crimeStats.year >= 1994 && crimeStats.year <= 1997 
+                                      select crimeStats.murder;
+
+
 
                 sr.Close();
 
