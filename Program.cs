@@ -57,21 +57,28 @@ namespace CrimeAnalyzer
                 List<CrimeStats> crimeStatsList = new List<CrimeStats>();
 
 
-                Console.WriteLine("Enter the File name:");
-                string filename = "CrimeData.csv";
-
-                Console.WriteLine("Enter the report filename:");
-                string report;
-
+                //Console.WriteLine("Enter the File name:");
                 /// string filename = Console.ReadLine();
+
+                string filename = args[0] ; // csv file 
+
+                //Console.WriteLine("Enter the report filename:");
+                // string report = Console.ReadLine();
+
+                string report = args[1]; // report file 
+
+                StreamWriter sw = new  StreamWriter(report);
+
+
+
+
+            
                 StreamReader sr = new StreamReader(filename);
 
                 /// read first line 
                 line = sr.ReadLine();
 
-                string[] titles = line.Split(',');  // Years Population , etc 
-
-
+     
                 // Second line where data starts 
                 line = sr.ReadLine();
 
@@ -109,13 +116,16 @@ namespace CrimeAnalyzer
                                       select crimeStats.year;
 
                 Console.WriteLine($"Period {q1.Min()} - {q1.Max()}  ({q1.Max() - q1.Min()} years)");
+                sw.WriteLine($"Period {q1.Min()} - {q1.Max()}  ({q1.Max() - q1.Min()} years)");
 
 
+                 
                 // How many years of data are included?
                 IEnumerable<int> q2 = from crimeStats in crimeStatsList
                                       select crimeStats.year;
 
                 Console.WriteLine($"Year count {q2.Count()}");
+                sw.WriteLine($"Year count {q2.Count()}"); 
 
 
                 // What years is the number of murders per year less than 15000?
@@ -124,18 +134,41 @@ namespace CrimeAnalyzer
                                       select crimeStats.year;
                 
                 Console.Write($"Years murders per year< 15000: ");
+                sw.Write($"Years murders per year< 15000: ");
+
 
                 foreach (int x in q3)
                 {
                     Console.Write($"{x}, ");
+                    sw.Write($"{x}, ");
+
                 }
+
                 Console.WriteLine("\n");
+                sw.WriteLine("\n");
+
 
                 // What are the years and associated robberies per year for years where the number of robberies is greater than 500000 ?
                 IEnumerable<int> q4 = from crimeStats in crimeStatsList
                                       where crimeStats.robbery > 500000
                                       select crimeStats.year;
-                // Console.WriteLine("Robberies per year > 500000 "); 
+
+                Console.Write("Robberies per year > 500000 "); 
+                sw.Write("Robberies per year > 500000 "); 
+
+
+                foreach (int x in q4)
+                {
+                    Console.Write($"{x}, ");
+                    sw.Write($"{x}, ");
+
+                }
+                
+                Console.WriteLine("\n");
+                sw.WriteLine("\n");
+
+
+          
 
                 // What is the violent crime per capita rate for 2010? Per capita rate is the number of violent crimes in a year divided by the size of the population that year.
 
@@ -145,12 +178,17 @@ namespace CrimeAnalyzer
 
 
                 Console.Write("Violent crime per capita rate(2010): ");  
+                sw.Write("Violent crime per capita rate(2010): ");  
+
                 foreach (double x in q5)
                 {
                     Console.Write(x);
+                    sw.Write(x);
+
 
                 }
                 Console.WriteLine("\n");
+                sw.WriteLine("\n");
 
 
                 // What is the average number of murders per year across all years? 
@@ -160,6 +198,9 @@ namespace CrimeAnalyzer
 
                 double avg_murder = q6.Average();
                 Console.WriteLine($"Average murder per year (all years):  {avg_murder}");
+                sw.WriteLine($"Average murder per year (all years):  {avg_murder}");
+
+
 
                 // What is the average number of murders per year for 1994 to 1997?
                 IEnumerable<int> q7 = from crimeStats in crimeStatsList
@@ -168,6 +209,7 @@ namespace CrimeAnalyzer
 
                 double avg_murder2 = q7.Average();
                 Console.WriteLine($"Average murder per year (1994-1997) {avg_murder2}");
+                sw.WriteLine($"Average murder per year (1994-1997) {avg_murder2}");
 
 
                 // What is the average number of murders per year for 2010 to 2013?
@@ -176,7 +218,9 @@ namespace CrimeAnalyzer
                                       select crimeStats.murder;
 
                 double avg_murder3 = q8.Average();
-                Console.WriteLine($"Average murder per year (2010-2013) {avg_murder3}");
+                Console.WriteLine($"Average murder per year (2010-2013) {avg_murder3}"); 
+                sw.WriteLine($"Average murder per year (2010-2013) {avg_murder3}");
+
 
                 // What is the minimum number of thefts per year for 1999 to 2004?
                 IEnumerable<int> q9 = from crimeStats in crimeStatsList
@@ -185,10 +229,14 @@ namespace CrimeAnalyzer
 
 
                 Console.WriteLine($"Minimum thefts per year (1999-2004): {q9.Min()}");
+                sw.WriteLine($"Minimum thefts per year (1999-2004): {q9.Min()}");
+
 
 
                 // QUESTION 10  What is the maximum number of thefts per year for 1999 to 2004 ?  
                 Console.WriteLine($"Maximum thefts per year (1999-2004): {q9.Max()}");
+                sw.WriteLine($"Maximum thefts per year (1999-2004): {q9.Max()}");
+
 
                 // What year had the highest number of motor vehicle thefts?
 
@@ -210,11 +258,16 @@ namespace CrimeAnalyzer
                 foreach (int x in q11_1)
                 {
 
-                    Console.WriteLine($"Year of highest number of motor vehicle thefts {x}");
+                    sw.WriteLine($"Year of highest number of motor vehicle thefts {x}");
                     break;
                 }
 
+
+
+
                 sr.Close();
+                sw.Close(); 
+
 
             }
 
